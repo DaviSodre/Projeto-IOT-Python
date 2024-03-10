@@ -5,23 +5,34 @@ import gtts
 from playsound import playsound
 import time
 import pyttsx3
+import speech_recognition as sr
 
+# Carrega as variáveis de ambiente
 load_dotenv()
-
-
 openai.api_key = os.getenv("OPEN_AI_KEY")
 
-nome = "Unknown"
-conversa = []  # lista para guardar a conversa
-engine = pyttsx3.init()
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id) # Define a voz desejada
+# Função para capturar a frase do microfone
+def ouvir_microfone():
+    microfone = sr.Recognizer()
 
+    with sr.Microphone() as source:
+        microfone.adjust_for_ambient_noise(source)
 
-mensagens = [{"role": "system", "content": f"Seu nome é {nome} você é uma inteligencia artificial feita para educação de crianças. Por tanto responderá dúvidas e poderá contar histórias."},]
+        print("Estou ouvindo: ")
 
-def ask_gpt(mensagens, user_input):
-    mensagens = [mensagens[0]] + mensagens[-10:] + [{"role": "user", "content": user_input}]
+        audio = microfone.listen(source)
+
+    try:
+        frase = microfone.recognize_google(audio, language='pt-BR')
+        print("Você disse: " + frase)
+        return frase
+    except sr.UnknownValueError:
+        print("Não entendi")
+        return None
+
+# Função para interagir com a API OpenAI
+def ask_gpt(mensagens, frase):
+    mensagens = [mensagens[0]] + mensagens[-10:] + [{"role": "user", "content": frase}]
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
         messages=mensagens,
@@ -30,21 +41,40 @@ def ask_gpt(mensagens, user_input):
     )
     return response['choices'][0]['message']['content']
 
+# Função principal
 def main():
+    # Define as variáveis
+    nome = "Unknown"
+    conversa = [] # Lista para guardar a conversa
+    engine = pyttsx3.init()
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[0].id) # Define a voz desejada
+
+    # Mensagem inicial
+    mensagens = [{"role": "system", "content": f"Seu nome é {nome} você é uma inteligencia artificial feita para educação de crianças. Por tanto responderá dúvidas e poderá contar histórias."},]
+
     while True:
-        user_input = input("Você: ")
-        mensagens.append({"role": "user", "content": user_input})  # Adiciona a mensagem do usuário à lista    
-        resposta = ask_gpt(mensagens, user_input)
-        mensagens.append({"role": "system", "content": resposta})  # Adiciona a resposta do sistema à lista
-        print(f"{nome}:", resposta)
-        
-        falar = gtts.gTTS(resposta, lang='pt-br')
-        falar.save('audio.mp3')
-        engine.say(resposta)
-        engine.runAndWait()
+        # Captura a frase do usuário
+        frase = ouvir_microfone()
 
+        # Se a frase for válida
+        if frase is not None:
+            # Adiciona a mensagem do usuário à lista
+            mensagens.append({"role": "user", "content": frase})
 
+            # Envia a frase para a API OpenAI e recebe a resposta
+            resposta = ask_gpt(mensagens, frase)
+
+            # Adiciona a resposta do sistema à lista
+            mensagens.append({"role": "system", "content": resposta})
+
+            # Exibe a resposta na tela e reproduz em voz alta
+            print(f"{nome}:", resposta)
+            falar = gtts.gTTS(resposta, lang='pt-br')
+            falar.save('audio.mp3')
+            engine.say(resposta)
+            engine.runAndWait()
+
+# Executa a função principal
 if __name__ == "__main__":
     main()
-
-
