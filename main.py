@@ -1,9 +1,6 @@
 import openai
 from dotenv import load_dotenv
 import os
-import gtts
-from playsound import playsound
-import time
 import pyttsx3
 import speech_recognition as sr
 
@@ -45,7 +42,6 @@ def ask_gpt(mensagens, frase):
 def main():
     # Define as variáveis
     nome = "Unknown"
-    conversa = [] # Lista para guardar a conversa
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[0].id) # Define a voz desejada
@@ -70,8 +66,6 @@ def main():
 
             # Exibe a resposta na tela e reproduz em voz alta
             print(f"{nome}:", resposta)
-            falar = gtts.gTTS(resposta, lang='pt-br')
-            falar.save('audio.mp3')
             engine.say(resposta)
             engine.runAndWait()
 
