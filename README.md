@@ -11,7 +11,9 @@ Ao fazer isso, você só vai precisar instalar as bibliotecas usando pip install
 
 
 pyttsx3
+
 speech_recognition
+
 pyaudio
 
 
