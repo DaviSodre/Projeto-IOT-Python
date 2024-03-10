@@ -3,7 +3,7 @@ Projeto para matéria extensionista de IOT que consiste em usar a API do Chat GP
 
 1 - Para testar o código, você precisará criar sua própria key da OPEN AI, você ganha 5 USD em créditos ao criar a conta, só criar a Key em: https://platform.openai.com/api-keys
 
-Ao conseguir sua Key, você vai criar no seu VS Code, no mesmo diretório que está o main.py, um arquivo chamado .env, ele ficará com simbolo de engrenagem, você só vai botar aqui nele:
+Ao conseguir sua Key, você vai criar no seu VS Code, no mesmo diretório que está o main.py, um arquivo chamado .env, ele ficará com simbolo de engrenagem, você só vai botar isso aqui nele:
 
 OPEN_AI_KEY = "Sua key aqui"
 
