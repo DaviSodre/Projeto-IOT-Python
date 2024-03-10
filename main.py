@@ -4,11 +4,11 @@ import os
 import pyttsx3
 import speech_recognition as sr
 
-# Carrega as variáveis de ambiente
+# isso aq é pra carregar sua KEY q ta no .env
 load_dotenv()
 openai.api_key = os.getenv("OPEN_AI_KEY")
 
-# Função para capturar a frase do microfone
+# função para capturar sua voz do microfone
 def ouvir_microfone():
     microfone = sr.Recognizer()
 
@@ -27,7 +27,7 @@ def ouvir_microfone():
         print("Não entendi")
         return None
 
-# Função para interagir com a API OpenAI
+# função para usar a IA com a API OpenAI
 def ask_gpt(mensagens, frase):
     mensagens = [mensagens[0]] + mensagens[-10:] + [{"role": "user", "content": frase}]
     response = openai.ChatCompletion.create(
@@ -38,37 +38,37 @@ def ask_gpt(mensagens, frase):
     )
     return response['choices'][0]['message']['content']
 
-# Função principal
+# função principal
 def main():
-    # Define as variáveis
+    # define as variáveis
     nome = "Unknown"
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[0].id) # Define a voz desejada
+    engine.setProperty('voice', voices[0].id) # define a voz desejada *nao q tenha muitas opções né*
 
-    # Mensagem inicial
+    # mensagem inicial, onde o bot assume uma "personalidade"
     mensagens = [{"role": "system", "content": f"Seu nome é {nome} você é uma inteligencia artificial feita para educação de crianças. Por tanto responderá dúvidas e poderá contar histórias."},]
 
     while True:
-        # Captura a frase do usuário
+        # captura a voz do usuário
         frase = ouvir_microfone()
 
-        # Se a frase for válida
+        # se a frase for válida
         if frase is not None:
-            # Adiciona a mensagem do usuário à lista
+            # adiciona a mensagem do usuário na lista
             mensagens.append({"role": "user", "content": frase})
 
-            # Envia a frase para a API OpenAI e recebe a resposta
+            # envia a frase para a API OpenAI e recebe a resposta
             resposta = ask_gpt(mensagens, frase)
 
-            # Adiciona a resposta do sistema à lista
+            # adiciona a resposta do sistema à lista
             mensagens.append({"role": "system", "content": resposta})
 
-            # Exibe a resposta na tela e reproduz em voz alta
+            # exibe a resposta na tela e reproduz em voz alta
             print(f"{nome}:", resposta)
             engine.say(resposta)
             engine.runAndWait()
 
-# Executa a função principal
+# executa a função principal
 if __name__ == "__main__":
     main()
