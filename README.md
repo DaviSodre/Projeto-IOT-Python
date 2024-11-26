@@ -1,5 +1,5 @@
 # Projeto-IOT-Python
-Projeto para matéria extensionista de IOT que consiste em usar a API do Chat GPT com bibliotecas de reconhecimento de voz e fala para criar um robô que servirá como auxilio em escolas.
+Projeto que consiste em utilizar a API do ChatGPT para criar uma ChatBOT onde você pode conversar e ser respondido por voz.
 
 1 - Para testar o código, você precisará criar sua própria key da OPEN AI, você ganha 5 USD em créditos ao criar a conta, só criar a Key em: https://platform.openai.com/api-keys
 
